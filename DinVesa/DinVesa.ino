@@ -51,19 +51,20 @@
    
 */
 #include <Arduino.h>
-const char compile_date[] = __DATE__ " " __TIME__;
+//const char compile_date[] = __DATE__ " " __TIME__;
 
 // 128X64G  20X4  16X2
-#define DISPLAY_TYPE '20X4'
+#define DISPLAY_TYPE '128X64G'
 
 #if DISPLAY_TYPE == '128X64G'
 #include <U8g2lib.h>
-#endif
 #ifdef U8X8_HAVE_HW_SPI
 #include <SPI.h>
 #endif
 #ifdef U8X8_HAVE_HW_I2C
 #include <Wire.h>
+#endif
+U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R0, /* clock=*/ 13, /* data=*/ 11, /* CS=*/ 10, /* reset=*/ 8);
 #endif
 
 /*
@@ -74,18 +75,15 @@ const char compile_date[] = __DATE__ " " __TIME__;
     
   This is a page buffer example.    
 */
-
 // Please UNCOMMENT one of the contructor lines below
 // U8g2 Contructor List (Picture Loop Page Buffer)
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
 // Please update the pin numbers according to your setup. Use U8X8_PIN_NONE if the reset pin is not connected
 // Refer to u8g2.txt to get the needed line
-#if DISPLAY_TYPE == '128X64G'
-U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R0, /* clock=*/ 13, /* data=*/ 11, /* CS=*/ 10, /* reset=*/ 8);
-#endif
 
 #if DISPLAY_TYPE == '20X4' || DISPLAY_TYPE == '16X2'
 #include "Wire.h"
+//#include <Wire.h>
 #include <hd44780.h> // Extensible hd44780 in library manager - https://github.com/duinoWitchery/hd44780 bperrybap - worked on Due
 #include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
 hd44780_I2Cexp lcd; // declare lcd object: auto locate & auto config expander chip
@@ -96,6 +94,13 @@ hd44780_I2Cexp lcd; // declare lcd object: auto locate & auto config expander ch
 
 void setup(void) {
   int status;
+  pinMode(LED_BUILTIN, OUTPUT); // initialize digital pin LED_BUILTIN as an output.
+
+  // blink to indicate a program got this far
+  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(1000);                      // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+  delay(1000);                      // wait for a second
 
   /* U8g2 Project: SSD1306 Test Board */
   //pinMode(10, OUTPUT);
@@ -128,10 +133,21 @@ void setup(void) {
   status = lcd.begin(16, 2); // cols, rows
 #endif
 
-  pinMode(LED_BUILTIN, OUTPUT); // initialize digital pin LED_BUILTIN as an output.
+  // blink to indicate a program got this far
+  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(100);                      // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+  delay(1000);                      // wait for a second
+
 }
 
 void loop(void) {
+  // blink to indicate a program is loaded
+  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(100);                      // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+  delay(1000);                      // wait for a second
+
 #if DISPLAY_TYPE == '128X64G'
   u8g2.firstPage();
   do {
@@ -151,11 +167,4 @@ void loop(void) {
   lcd.print(F("  DinVesa.com   "));
 #endif
 
-  // blink to indicate a program is loaded
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(1000);                      // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(1000);                      // wait for a second
-
 }
-
