@@ -56,10 +56,6 @@ const char compile_date[] = __DATE__ " " __TIME__;
 // 128X64G  20X4  16X2
 #define DISPLAY_TYPE '20X4'
 
-//#ifdef DISPLAY_TYPE == '20X4' || DISPLAY_TYPE == '16X2'
-//#include "Wire.h"
-//#endif
-
 #if DISPLAY_TYPE == '128X64G'
 #include <U8g2lib.h>
 #endif
@@ -132,6 +128,7 @@ void setup(void) {
   status = lcd.begin(16, 2); // cols, rows
 #endif
 
+  pinMode(LED_BUILTIN, OUTPUT); // initialize digital pin LED_BUILTIN as an output.
 }
 
 void loop(void) {
@@ -153,6 +150,12 @@ void loop(void) {
   lcd.setCursor(0, 1);
   lcd.print(F("  DinVesa.com   "));
 #endif
-  delay(1000);
+
+  // blink to indicate a program is loaded
+  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(1000);                      // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+  delay(1000);                      // wait for a second
+
 }
 
